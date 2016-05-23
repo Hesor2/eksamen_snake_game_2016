@@ -1,5 +1,7 @@
 package dk.kea.class2016february.markus.gameengine.SnakeGame;
 
+import android.util.Log;
+
 import dk.kea.class2016february.markus.gameengine.Game;
 import dk.kea.class2016february.markus.gameengine.Screen;
 
