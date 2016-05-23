@@ -240,6 +240,11 @@ public abstract class Game extends Activity implements Runnable, View.OnKeyListe
 
     }
 
+    public void drawBitmap(Bitmap bitmap, Matrix matrix)
+    {
+        if (canvas != null) canvas.drawBitmap(bitmap, matrix, null);
+    }
+
     public static Bitmap rotateBitmap(Bitmap source, float angle)
     {
         Matrix matrix = new Matrix();

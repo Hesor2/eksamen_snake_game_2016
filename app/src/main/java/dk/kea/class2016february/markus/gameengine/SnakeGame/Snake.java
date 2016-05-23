@@ -53,7 +53,7 @@ public class Snake
         bodySegments.add(new SnakeBody(bodySegments.size(), x, y, angle));
     }
 
-    public void update(float deltaTime, int touchX)
+    public void update(float deltaTime, float input)
     {
         collideFood();
         segmentTimer += 1*deltaTime;
@@ -78,20 +78,8 @@ public class Snake
                 if (size < lastBodySegment + 1) lastBodySegment -= size;
             }
         }
-        if (touchX != -1)
-        {
-            float turnValue = turnSpeed*deltaTime;
+        angle += turnSpeed * input * deltaTime;
 
-
-            if (touchX < 49)
-            {
-                angle -= turnValue;
-            }
-            else if(touchX > 270)
-            {
-                angle += turnValue;
-            }
-        }
         if (angle < 0) angle += 360;
         else if(angle > 360) angle -=360;
 

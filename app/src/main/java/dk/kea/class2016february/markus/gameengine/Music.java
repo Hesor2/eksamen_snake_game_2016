@@ -68,6 +68,24 @@ public class Music implements MediaPlayer.OnCompletionListener
         }
     }
 
+    public void start()
+    {
+        if(mediaPlayer.isPlaying()) pause();
+        try
+        {
+            synchronized (this)
+            {
+                if(!isPrepared) mediaPlayer.prepare();
+                mediaPlayer.seekTo(0);
+                mediaPlayer.start();
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void setLooping(boolean isLooping)
     {
         mediaPlayer.setLooping(isLooping);

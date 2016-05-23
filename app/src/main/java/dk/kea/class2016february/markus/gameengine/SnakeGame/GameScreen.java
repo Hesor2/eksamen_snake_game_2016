@@ -3,6 +3,9 @@ package dk.kea.class2016february.markus.gameengine.SnakeGame;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
+
+import java.net.Socket;
 
 import dk.kea.class2016february.markus.gameengine.Game;
 import dk.kea.class2016february.markus.gameengine.Screen;
@@ -16,6 +19,8 @@ public class GameScreen extends Screen
         Paused, Running, gameOver
     }
 
+    boolean accelerometer;
+
     Typeface font;
     Bitmap background;
     Bitmap resume;
@@ -24,16 +29,21 @@ public class GameScreen extends Screen
     World world;
     WorldRenderer renderer;
 
-    public GameScreen(Game game)
+    public GameScreen(Game game, boolean useAccelerometer, Socket socket)
     {
         super(game);
+        this.accelerometer = useAccelerometer;
+
+
 
         font = game.loadFont("Qarmic_sans_Abridged.ttf");
         background = game.loadBitmap("background.png");
         resume = game.loadBitmap("resume.png");
         gameOver = game.loadBitmap("gameover.png");
-        world = new World(game);
+        world = new World(game, socket);
         renderer = new WorldRenderer(game, world);
+
+        resume();
     }
 
     @Override
@@ -43,66 +53,80 @@ public class GameScreen extends Screen
         {
             state = State.gameOver;
         }
-        if (state == State.Paused && game.isTouchDown(0))
-        {
-            state = State.Running;
-        }
+//        if (state == State.Paused && game.isTouchDown(0))
+//        {
+//            state = State.Running;
+//            resume();
+//        }
         if (state == State.gameOver && game.isTouchDown(0))
         {
+            dispose();
             game.setScreen(new StartScreen(game));
             return;
         }
-        if (state == State.Running && game.getTouchY(0) < 36 && game.getTouchX(0) > 320 - 36)
-        {
-            state = State.Paused;
-        }
+//        if (state == State.Running && game.getTouchY(0) < 36 && game.getTouchX(0) > 320 - 36)
+//        {
+//            state = State.Paused;
+//            pause();
+//        }
 //        game.drawBitmap(background, 0, 0);
-        if (state == State.Paused)
-        {
-            game.drawBitmap(resume, 160 - resume.getWidth() / 2, 320);
-        }
+//        if (state == State.Paused)
+//        {
+//            game.drawBitmap(resume, 160 - resume.getWidth() / 2, 320);
+//        }
 
 
         if (state == State.Running)
         {
-            int touchX = -1;
-            if (game.isTouchDown(0)) touchX = game.getTouchX(0);
-            world.update(deltaTime, touchX);
-//            game.drawText(font, "");
+            float input = 0;
+            if (accelerometer)
+            {
+                input = -game.getAccelerometer()[0] / 10;
+//                Log.d("accel", "" + input);
+            }
+            else
+            {
+                if (game.isTouchDown(0))
+                {
+                    int touchX = game.getTouchX(0);
+                    if (touchX < 49) input = -1;
+                    else if (touchX > 270) input = 1;
+                }
+            }
+            world.update(deltaTime, input);
         }
-//        game.drawBitmap(background, 0, 0);
 
         renderer.render();
 
         if (state == State.gameOver)
         {
-    //            game.drawBitmap(gameOver, 160 - gameOver.getWidth() / 2, 320);
             game.drawText(font, "Game Over", 40, 120, Color.GREEN, 40);
             game.drawText(font, "Your Score:", 100, 240, Color.GREEN, 20);
             game.drawText(font, "" + world.snake.score, 140, 260, Color.YELLOW, 30);
         }
-
-
     }
 
     @Override
     public void pause()
     {
-        if (state == State.Running)
+        //super.onPause();
+        if(state == State.Running)
         {
             state = State.Paused;
+
         }
+        game.music.pause();
     }
 
     @Override
     public void resume()
     {
-
+        game.music.start();
     }
 
     @Override
     public void dispose()
     {
-
+        game.music.pause();
     }
 }

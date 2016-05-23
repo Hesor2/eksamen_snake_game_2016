@@ -2,6 +2,7 @@ package dk.kea.class2016february.markus.gameengine.SnakeGame;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -14,6 +15,8 @@ public class WorldRenderer
 
     Rect cameraBoundary;
 
+    Bitmap snaketestImage;
+
     Bitmap backgroundImage;
     Bitmap snakeheadImage;
     Bitmap snakebodyImage;
@@ -25,6 +28,8 @@ public class WorldRenderer
     {
         this.game = game;
         this.world = world;
+
+        this.snaketestImage = game.loadBitmap("Snake_Test.png");
 
         this.backgroundImage = game.loadBitmap("Nintendo.jpg");
         this.snakeheadImage = game.loadBitmap("Snake_Green_Head.png");
@@ -52,6 +57,7 @@ public class WorldRenderer
             }
         }
 
+        //Snake Body
         Bitmap rotatedBitmap;
         for (SnakeBody bodySegment : world.snake.bodySegments)
         {
@@ -64,9 +70,26 @@ public class WorldRenderer
             }
         }
 
+
+        //Snake Head
+
+        //test1
+//        game.drawBitmap(snaketestImage, (int) world.snake.x - cameraBoundary.left, (int) world.snake.y - cameraBoundary.top);
+//        Matrix matrix = new Matrix();
+//        matrix.preRotate(world.snake.angle);
+//        matrix.postTranslate(world.snake.x - cameraBoundary.left, world.snake.y - cameraBoundary.top);
+
+        //test2
+//        matrix.setTranslate(16f, 16f);
+//        matrix.postRotate(world.snake.angle);
+//        matrix.postTranslate(world.snake.x - 16f - cameraBoundary.left, world.snake.y - 16f - cameraBoundary.top);
+
+//        game.drawBitmap(snakeheadImage, matrix);
+
         rotatedBitmap = game.rotateBitmap(snakeheadImage, world.snake.angle);
         game.drawBitmap(rotatedBitmap, (int)world.snake.x - cameraBoundary.left, (int)world.snake.y - cameraBoundary.top);
 
+        //Enemies
         for (Snake enemy : world.enemies)
         {
             float snakeRight = enemy.x + Snake.WIDTH;

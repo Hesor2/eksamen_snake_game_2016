@@ -1,5 +1,6 @@
 package dk.kea.class2016february.markus.gameengine.SnakeGame;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,6 +20,7 @@ public class World
     public static final float timerLimit = 2;
 
     public Game game;
+    boolean online = false;
     private Random rand = new Random();
 
     Snake snake = new Snake(160, 320, 100, this);
@@ -27,9 +29,10 @@ public class World
     List<Food> food = new ArrayList<>();
     boolean gameOver = false;
 
-    public World(Game game)
+    public World(Game game, Socket socket)
     {
         this.game = game;
+        if (socket != null) online = true;
         //test
         enemies.add(new Snake(160, 500, 100, this));
         for (int i = 0; i < 10; i++)
@@ -39,23 +42,31 @@ public class World
         }
     }
 
-    public void update(float deltaTime, int touchX)
+    public void update(float deltaTime, float input)
     {
-
-
-        foodTimer += 1*deltaTime;
-        if (foodTimer>=World.timerLimit)
+        if (online)
         {
-            float x = rand.nextInt((int) maxX);
-            float y = minY + rand.nextInt((int) (maxY - minY));
 
-            int value = rand.nextInt(3);
-            value = 0;
-            food.add(new Food(x, y, value+1));
-            foodTimer = 0;
+        }
+        else
+        {
+            foodTimer += 1*deltaTime;
+            if (foodTimer>=World.timerLimit)
+            {
+                float x = rand.nextInt((int) maxX);
+                float y = minY + rand.nextInt((int) (maxY - minY));
+
+                int value = rand.nextInt(3);
+//                value = 0;
+                food.add(new Food(x, y, value+1));
+                foodTimer = 0;
+            }
         }
 
-        snake.update(deltaTime, touchX);
-        camera.update();
+        if (!gameOver)
+        {
+            snake.update(deltaTime, input);
+            camera.update();
+        }
     }
 }

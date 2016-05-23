@@ -23,7 +23,7 @@ public class StartScreen extends Screen
     {
         if (game.isTouchDown(0))
         {
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new GameScreen(game, true, null));
             return;
         }
         passedTime = passedTime + deltaTime;
