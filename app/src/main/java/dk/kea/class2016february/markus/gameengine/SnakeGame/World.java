@@ -29,6 +29,8 @@ public class World
     List<Food> food = new ArrayList<>();
     boolean gameOver = false;
 
+    int score;
+
     public World(Game game, Socket socket)
     {
         this.game = game;

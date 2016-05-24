@@ -53,29 +53,12 @@ public class GameScreen extends Screen
         {
             state = State.gameOver;
         }
-//        if (state == State.Paused && game.isTouchDown(0))
-//        {
-//            state = State.Running;
-//            resume();
-//        }
         if (state == State.gameOver && game.isTouchDown(0))
         {
             dispose();
             game.setScreen(new StartScreen(game));
             return;
         }
-//        if (state == State.Running && game.getTouchY(0) < 36 && game.getTouchX(0) > 320 - 36)
-//        {
-//            state = State.Paused;
-//            pause();
-//        }
-//        game.drawBitmap(background, 0, 0);
-//        if (state == State.Paused)
-//        {
-//            game.drawBitmap(resume, 160 - resume.getWidth() / 2, 320);
-//        }
-
-
         if (state == State.Running)
         {
             float input = 0;
@@ -98,11 +81,16 @@ public class GameScreen extends Screen
 
         renderer.render();
 
-        if (state == State.gameOver)
+        if (state == State.Running)
+        {
+            game.drawText(font, "Score:", 200, 10, Color.GREEN, 14);
+            game.drawText(font, "" + world.score, 260, 10, Color.YELLOW, 14);
+        }
+        else if (state == State.gameOver)
         {
             game.drawText(font, "Game Over", 40, 120, Color.GREEN, 40);
             game.drawText(font, "Your Score:", 100, 240, Color.GREEN, 20);
-            game.drawText(font, "" + world.snake.score, 140, 260, Color.YELLOW, 30);
+            game.drawText(font, "" + world.score, 140, 260, Color.YELLOW, 30);
         }
     }
 

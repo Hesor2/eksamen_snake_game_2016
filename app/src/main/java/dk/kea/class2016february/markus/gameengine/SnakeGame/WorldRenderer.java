@@ -41,6 +41,7 @@ public class WorldRenderer
 
     public void render()
     {
+        Bitmap rotatedBitmap;
         cameraBoundary = world.camera.getBoundary();
 
 //        drawBitmap(Bitmap bitmap, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight)
@@ -57,17 +58,21 @@ public class WorldRenderer
             }
         }
 
-        //Snake Body
-        Bitmap rotatedBitmap;
-        for (SnakeBody bodySegment : world.snake.bodySegments)
+        //Snake
+        if (!world.gameOver)
         {
-            float bodyRight = bodySegment.x + SnakeBody.WIDTH;
-            float bodyBottom = bodySegment.y + SnakeBody.HEIGHT;
-            if (bodySegment.x <= cameraBoundary.right && bodyRight >= cameraBoundary.left && bodySegment.y <= cameraBoundary.bottom && bodyBottom >= cameraBoundary.top)
+            for (SnakeBody bodySegment : world.snake.bodySegments)
             {
-                    rotatedBitmap = game.rotateBitmap(snakebodyImage, bodySegment.angle);
-                    game.drawBitmap(rotatedBitmap, (int) bodySegment.x - cameraBoundary.left, (int) bodySegment.y - cameraBoundary.top);
+                float bodyRight = bodySegment.x + SnakeBody.WIDTH;
+                float bodyBottom = bodySegment.y + SnakeBody.HEIGHT;
+                if (bodySegment.x <= cameraBoundary.right && bodyRight >= cameraBoundary.left && bodySegment.y <= cameraBoundary.bottom && bodyBottom >= cameraBoundary.top)
+                {
+                    game.drawBitmap(snakebodyImage, (int) bodySegment.x - cameraBoundary.left, (int) bodySegment.y - cameraBoundary.top);
+                }
             }
+
+            rotatedBitmap = game.rotateBitmap(snakeheadImage, world.snake.angle);
+            game.drawBitmap(rotatedBitmap, (int)world.snake.x - cameraBoundary.left, (int)world.snake.y - cameraBoundary.top);
         }
 
 
@@ -86,28 +91,27 @@ public class WorldRenderer
 
 //        game.drawBitmap(snakeheadImage, matrix);
 
-        rotatedBitmap = game.rotateBitmap(snakeheadImage, world.snake.angle);
-        game.drawBitmap(rotatedBitmap, (int)world.snake.x - cameraBoundary.left, (int)world.snake.y - cameraBoundary.top);
-
         //Enemies
         for (Snake enemy : world.enemies)
         {
-            float snakeRight = enemy.x + Snake.WIDTH;
-            float snakeBottom = enemy.y + Snake.HEIGHT;
-            if (enemy.x <= cameraBoundary.right && snakeRight >= cameraBoundary.left && enemy.y <= cameraBoundary.bottom && snakeBottom >= cameraBoundary.top)
-            {
-                rotatedBitmap = game.rotateBitmap(enemyheadImage, enemy.angle);
-                game.drawBitmap(rotatedBitmap, (int) enemy.x - cameraBoundary.left, (int) enemy.y - cameraBoundary.top);
-            }
             for (SnakeBody bodySegment : enemy.bodySegments)
             {
                 float bodyRight = bodySegment.x + SnakeBody.WIDTH;
                 float bodyBottom = bodySegment.y + SnakeBody.HEIGHT;
                 if (bodySegment.x <= cameraBoundary.right && bodyRight >= cameraBoundary.left && bodySegment.y <= cameraBoundary.bottom && bodyBottom >= cameraBoundary.top)
                 {
-                    rotatedBitmap = game.rotateBitmap(enemybodyImage, bodySegment.angle);
-                    game.drawBitmap(rotatedBitmap, (int) bodySegment.x - cameraBoundary.left, (int) bodySegment.y - cameraBoundary.top);
+//                    rotatedBitmap = game.rotateBitmap(enemybodyImage, bodySegment.angle);
+//                    game.drawBitmap(rotatedBitmap, (int) bodySegment.x - cameraBoundary.left, (int) bodySegment.y - cameraBoundary.top);
+
+                    game.drawBitmap(enemybodyImage, (int) bodySegment.x - cameraBoundary.left, (int) bodySegment.y - cameraBoundary.top);
                 }
+            }
+            float snakeRight = enemy.x + Snake.WIDTH;
+            float snakeBottom = enemy.y + Snake.HEIGHT;
+            if (enemy.x <= cameraBoundary.right && snakeRight >= cameraBoundary.left && enemy.y <= cameraBoundary.bottom && snakeBottom >= cameraBoundary.top)
+            {
+                rotatedBitmap = game.rotateBitmap(enemyheadImage, enemy.angle);
+                game.drawBitmap(rotatedBitmap, (int) enemy.x - cameraBoundary.left, (int) enemy.y - cameraBoundary.top);
             }
         }
     }

@@ -19,7 +19,6 @@ public class Snake
     private float velocityX;
     private float velocityY;
     float angle;
-    public int score = 0;
 
     float turnSpeed = 200;
 
@@ -110,7 +109,7 @@ public class Snake
                     float otherLowerEdge = food.y + Food.HEIGHT;
                     if ((y <= otherLowerEdge && y >= otherUpperEdge)||(lowerEdge <= otherLowerEdge && lowerEdge >= otherUpperEdge))
                     {
-                        score += food.value*100;
+                        world.score += food.value*100;
                         newSegmentCount += food.value;
                         newBodySegment = true;
 
@@ -125,10 +124,8 @@ public class Snake
     {
         if(x < world.minX || x + Snake.WIDTH > world.maxX || y < world.minY || y + Snake.HEIGHT > world.maxY)
         {
-            world.gameOver = true;
+            die();
         }
-
-
     }
 
     private void move(float deltaTime)
@@ -137,6 +134,24 @@ public class Snake
         x += velocityX * deltaTime;
         y += velocityY * deltaTime;
 
+    }
+
+    private void die()
+    {
+        world.gameOver = true;
+
+        int size = bodySegments.size();
+        for (int i = size - 1; i >= 0; i--)
+        {
+            SnakeBody segment = bodySegments.get(i);
+            world.food.add(new Food(segment.x, segment.y, 1));
+
+            bodySegments.remove(i);
+        }
+
+        world.food.add(new Food(x, y, 1));
+
+        world.snake = null;
     }
 }
 

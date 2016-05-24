@@ -14,15 +14,15 @@ public class SnakeGame extends Game
         return new StartScreen(this);
     }
 
-    public void onPause()
-    {
-        super.onPause();
-        music.pause();
-    }
-
-    public void onResume()
-    {
-        super.onResume();
-        music.play();
-    }
+//    public void onPause()
+//    {
+//        super.onPause();
+//        music.pause();
+//    }
+//
+//    public void onResume()
+//    {
+//        super.onResume();
+//        music.play();
+//    }
 }
