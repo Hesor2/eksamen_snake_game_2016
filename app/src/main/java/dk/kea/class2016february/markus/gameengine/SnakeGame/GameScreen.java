@@ -11,6 +11,7 @@ import dk.kea.class2016february.markus.gameengine.Game;
 import dk.kea.class2016february.markus.gameengine.Screen;
 import dk.kea.class2016february.markus.gameengine.SnakeGame.World;
 import dk.kea.class2016february.markus.gameengine.SnakeGame.WorldRenderer;
+import dk.kea.class2016february.markus.gameengine.Sound;
 
 public class GameScreen extends Screen
 {
@@ -25,6 +26,7 @@ public class GameScreen extends Screen
     Bitmap background;
     Bitmap resume;
     Bitmap gameOver;
+    Sound trombone;
     State state = State.Running;
     World world;
     WorldRenderer renderer;
@@ -40,6 +42,8 @@ public class GameScreen extends Screen
         background = game.loadBitmap("background.png");
         resume = game.loadBitmap("resume.png");
         gameOver = game.loadBitmap("gameover.png");
+        trombone = game.loadSound("Sad_Trombone.mp3");
+
         world = new World(game, socket);
         renderer = new WorldRenderer(game, world);
 
@@ -88,6 +92,11 @@ public class GameScreen extends Screen
         }
         else if (state == State.gameOver)
         {
+            if(game.music.isPlaying())
+            {
+                game.music.pause();
+                trombone.play(0.8f);
+            }
             game.drawText(font, "Game Over", 40, 120, Color.GREEN, 40);
             game.drawText(font, "Your Score:", 100, 240, Color.GREEN, 20);
             game.drawText(font, "" + world.score, 140, 260, Color.YELLOW, 30);

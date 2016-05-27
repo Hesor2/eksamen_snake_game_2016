@@ -31,7 +31,7 @@ public class WorldRenderer
 
         this.snaketestImage = game.loadBitmap("Snake_Test.png");
 
-        this.backgroundImage = game.loadBitmap("Nintendo.jpg");
+        this.backgroundImage = game.loadBitmap("plane.jpg");
         this.snakeheadImage = game.loadBitmap("Snake_Green_Head.png");
         this.snakebodyImage = game.loadBitmap("Snake_Green_Body.png");
         this.enemyheadImage = game.loadBitmap("Snake_Red_Head.png");
