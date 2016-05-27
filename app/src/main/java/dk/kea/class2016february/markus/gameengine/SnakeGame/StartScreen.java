@@ -1,6 +1,8 @@
 package dk.kea.class2016february.markus.gameengine.SnakeGame;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 
 import dk.kea.class2016february.markus.gameengine.Game;
@@ -12,18 +14,22 @@ public class StartScreen extends Screen
     Bitmap buttons;
     Bitmap mainmenu;
     Bitmap insertCoin;
-    float passedTime = 0;
-    Connection C;
-    public StartScreen(Game game)
+    Typeface font;
+    ConnectionHandler connectionHandler;
+    public StartScreen(Game game, ConnectionHandler connectionHandler)
     {
-
         super(game);
+        this.connectionHandler = connectionHandler;
+
         buttons = game.loadBitmap("Snake_Buttons.png");
         mainmenu = game.loadBitmap("mainmenu.png");
         insertCoin = game.loadBitmap("insertcoin.png");
+        font = game.loadFont("Qarmic_sans_Abridged.ttf");
         try
         {
-            C = new Connection();
+//            C.terminate();
+//            C = new Connection();
+//            C.start();
             Log.d("SnakeGame", "CC Created");
         } catch (Exception e)
         {
@@ -42,18 +48,27 @@ public class StartScreen extends Screen
                 if (touchY >= 20 && touchY <= 100)
                 {
                     //connect ting
-
+                    try
+                    {
+                        if (connectionHandler.isConnected()) connectionHandler.terminateConnection();
+                        Connection C = new Connection(connectionHandler);
+                        C.start();
+                        Log.d("SnakeGame", "CC Created");
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
                 else if(touchY >= 279 && touchY <= 359)
                 {
                     //touch ting
-                    game.setScreen(new GameScreen(game, false, null));
+                    game.setScreen(new GameScreen(game, false, connectionHandler));
                     return;
                 }
                 else if(touchY >= 379 && touchY <= 459)
                 {
                     //accel ting
-                    game.setScreen(new GameScreen(game, true, null));
+                    game.setScreen(new GameScreen(game, true, connectionHandler));
                     return;
                 }
             }
@@ -67,6 +82,12 @@ public class StartScreen extends Screen
         // button width 280, height 80
         //Connect-knap
         game.drawBitmap(buttons, 20, 20, 0, 160, 280, 80);
+
+        if (connectionHandler.isConnected())
+        {
+            game.drawText(font, "You are connected", 20, 120, Color.GREEN, 20);
+        }
+
         //Touch-knap
         game.drawBitmap(buttons, 20, 279, 0, 0, 280, 80);
         //Accel-knap
@@ -76,7 +97,7 @@ public class StartScreen extends Screen
     @Override
     public void pause()
     {
-
+//        connectionHandler.terminateConnection();
     }
 
     @Override
@@ -88,6 +109,6 @@ public class StartScreen extends Screen
     @Override
     public void dispose()
     {
-
+//        connectionHandler.terminateConnection();
     }
 }

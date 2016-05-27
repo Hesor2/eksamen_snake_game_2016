@@ -4,17 +4,14 @@ public class SnakeBody
 {
     public static final float WIDTH = 32;
     public static final float HEIGHT = 32;
-    float id;
+    int id;
     float x;
     float y;
-    float angle;
 
-
-    public SnakeBody(float id, float x, float y, float angle)
+    public SnakeBody(int id, float x, float y)
     {
         this.id = id;
         this.x = x;
         this.y = y;
-        this.angle = angle;
     }
 }

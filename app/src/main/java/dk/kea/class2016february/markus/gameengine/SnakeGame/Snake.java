@@ -14,6 +14,8 @@ public class Snake
     public static final float WIDTH = 32;
     public static final float HEIGHT = 32;
     private float totalVelocity;
+
+    int id;
     float x;
     float y;
     private float velocityX;
@@ -33,8 +35,9 @@ public class Snake
     private int newSegmentCount;
     private World world;
 
-    public Snake(float x, float y, float velocity, World world)
+    public Snake(int id, float x, float y, float velocity, World world)
     {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.world = world;
@@ -49,7 +52,21 @@ public class Snake
         newSegmentCount = 0;
 
         bodySegments = new ArrayList<>();
-        bodySegments.add(new SnakeBody(bodySegments.size(), x, y, angle));
+        bodySegments.add(new SnakeBody(bodySegments.size(), x, y));
+
+        if (world.online)
+        {
+            world.decoder.sendNewSnake(id,angle,x,y);
+            world.decoder.sendNewBody(id, bodySegments.size(), x, y);
+        }
+    }
+
+    public Snake(int id, float angle, float x, float y)
+    {
+        this. id = id;
+        this. x = x;
+        this.y = y;
+        this. angle = angle;
     }
 
     public void update(float deltaTime, float input)
@@ -63,7 +80,11 @@ public class Snake
             segmentTimer = 0;
             if (newBodySegment)
             {
-                bodySegments.add(new SnakeBody(size, x, y, angle));
+                bodySegments.add(new SnakeBody(size, x, y));
+                if (world.online)
+                {
+                    world.decoder.sendNewBody(id, bodySegments.size(), x, y);
+                }
                 newSegmentCount--;
                 if (newSegmentCount == 0) newBodySegment = false;
             }
@@ -72,7 +93,10 @@ public class Snake
                 SnakeBody body = bodySegments.get(lastBodySegment);
                 body.x = x;
                 body.y = y;
-                body.angle = angle;
+                if (world.online)
+                {
+                    world.decoder.sendSetBody(id, body.id, x, y);
+                }
                 lastBodySegment++;
                 if (size < lastBodySegment + 1) lastBodySegment -= size;
             }
@@ -88,6 +112,7 @@ public class Snake
         move(deltaTime);
 
         collideBorder();
+        collideEnemy();
     }
 
     private void collideFood()
@@ -113,7 +138,36 @@ public class Snake
                         newSegmentCount += food.value;
                         newBodySegment = true;
 
+                        if (world.online)
+                        {
+                            world.decoder.sendDelFood(food.id);
+                        }
                         world.food.remove(i);
+
+                    }
+                }
+            }
+        }
+    }
+
+    private void collideEnemy()
+    {
+        float rightEdge = this.x + Snake.WIDTH;
+        float lowerEdge = this.y + Snake.HEIGHT;
+
+        for (Snake enemy : world.enemies)
+        {
+            for (SnakeBody body : enemy.bodySegments)
+            {
+                float otherRightEdge = body.x + SnakeBody.WIDTH;
+                float otherLeftEdge = body.x;
+                if ((x <= otherRightEdge && x >= otherLeftEdge) || (rightEdge <= otherRightEdge && rightEdge >= otherLeftEdge) || (x <= otherLeftEdge && rightEdge >= otherRightEdge))
+                {
+                    float otherUpperEdge = body.y;
+                    float otherLowerEdge = body.y + SnakeBody.HEIGHT;
+                    if ((y <= otherLowerEdge && y >= otherUpperEdge) || (lowerEdge <= otherLowerEdge && lowerEdge >= otherUpperEdge))
+                    {
+                        die();
                     }
                 }
             }
@@ -128,11 +182,18 @@ public class Snake
         }
     }
 
+
+
     private void move(float deltaTime)
     {
 //        Log.d("Velocity", "" + (xSpeed+ySpeed));
         x += velocityX * deltaTime;
         y += velocityY * deltaTime;
+
+        if (world.online)
+        {
+            world.decoder.sendSetSnake(id, angle, x, y);
+        }
 
     }
 
@@ -144,12 +205,27 @@ public class Snake
         for (int i = size - 1; i >= 0; i--)
         {
             SnakeBody segment = bodySegments.get(i);
-            world.food.add(new Food(segment.x, segment.y, 1));
+            if (world.online)
+            {
+                world.decoder.sendSpawnFood(segment.x, segment.y);
+            }
+            else
+            {
+                world.food.add(new Food(0, segment.x, segment.y));
+                bodySegments.remove(i);
+            }
 
-            bodySegments.remove(i);
         }
 
-        world.food.add(new Food(x, y, 1));
+        if (world.online)
+        {
+            world.decoder.sendSpawnFood(x, y);
+            world.decoder.sendDelSnake(id);
+        }
+        else
+        {
+            world.food.add(new Food(0, x, y));
+        }
 
         world.snake = null;
     }

@@ -1,5 +1,7 @@
 package dk.kea.class2016february.markus.gameengine.SnakeGame;
 
+import android.util.Log;
+
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,50 +21,56 @@ public class World
     public float foodTimer = 0;
     public static final float timerLimit = 2;
 
-    public Game game;
+//    public SnakeGame game;
+    ConnectionHandler connectionHandler;
+    InstructionDecoder decoder;
     boolean online = false;
     private Random rand = new Random();
 
-    Snake snake = new Snake(160, 320, 100, this);
-    public Camera camera = new Camera(snake, this);
+    Snake snake;
+    public Camera camera;
     List<Snake> enemies = new ArrayList<>();
     List<Food> food = new ArrayList<>();
     boolean gameOver = false;
 
     int score;
 
-    public World(Game game, Socket socket)
+    public World(ConnectionHandler connectionHandler)
     {
-        this.game = game;
-        if (socket != null) online = true;
-        //test
-        enemies.add(new Snake(160, 500, 100, this));
-        for (int i = 0; i < 10; i++)
+        this.connectionHandler = connectionHandler;
+        this.decoder = new InstructionDecoder(connectionHandler, this);
+        if (connectionHandler.isConnected())
         {
-
-            enemies.get(0).update(0.8f,-1);
+            online = true;
         }
+        snake = new Snake(connectionHandler.getConnectionId(), 160, 320, 100, this);
+        camera  = new Camera(snake, this);
     }
 
     public void update(float deltaTime, float input)
     {
+//        Log.d("online", "" + online);
         if (online)
         {
-
+            decoder.executeInstructions();
         }
-        else
-        {
-            foodTimer += 1*deltaTime;
-            if (foodTimer>=World.timerLimit)
-            {
-                float x = rand.nextInt((int) maxX);
-                float y = minY + rand.nextInt((int) (maxY - minY));
 
-                int value = rand.nextInt(3);
-//                value = 0;
-                food.add(new Food(x, y, value+1));
-                foodTimer = 0;
+
+        foodTimer += 1*deltaTime;
+        if (foodTimer>=World.timerLimit)
+        {
+            float x = rand.nextInt((int) maxX);
+            float y = minY + rand.nextInt((int) (maxY - minY));
+            if (online)
+            {
+//                Log.d("World spawn food", "" + x + " " + y);
+                decoder.sendSpawnFood(x,y);
             }
+            else
+            {
+                food.add(new Food(0, x, y));
+            }
+            foodTimer = 0;
         }
 
         if (!gameOver)
@@ -71,4 +79,85 @@ public class World
             camera.update();
         }
     }
+
+    public void addEnemy(int id, float angle, float x, float y)
+    {
+        enemies.add(new Snake(id, angle, x, y));
+    }
+
+    public void addEnemyBody(int snakeID, int bodyID, float x, float y)
+    {
+        for (Snake s : enemies)
+        {
+            if (snakeID == s.id)
+            {
+                s.bodySegments.add(new SnakeBody(bodyID, x, y));
+                return;
+            }
+        }
+    }
+
+    public void addFood(int id, float x, float y)
+    {
+        food.add(new Food(id, x, y));
+    }
+
+    public void setEnemy(int id,float angle, float x, float y)
+    {
+        for (Snake s : enemies)
+        {
+            if (id == s.id)
+            {
+                s.angle = angle;
+                s.x = x;
+                s.y = y;
+                return;
+            }
+        }
+    }
+
+    public void setEnemyBody(int snakeID, int bodyID, float x, float y)
+    {
+        for (Snake s : enemies)
+        {
+            if (snakeID == s.id)
+            {
+                for (SnakeBody b : s.bodySegments)
+                {
+                    if (bodyID == b.id)
+                    {
+                        b.x = x;
+                        b.y = y;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public void deleteEnemy(int id)
+    {
+        for (Snake s : enemies)
+        {
+            if (id == s.id)
+            {
+                enemies.remove(s);
+                return;
+            }
+        }
+    }
+
+    public void deleteFood(int id)
+    {
+        for (Food f : food)
+        {
+            if (id == f.id)
+            {
+                food.remove(f);
+                return;
+            }
+        }
+    }
+
+
 }

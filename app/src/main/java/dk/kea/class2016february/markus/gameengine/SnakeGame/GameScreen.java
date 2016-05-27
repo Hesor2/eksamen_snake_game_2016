@@ -28,15 +28,15 @@ public class GameScreen extends Screen
     Bitmap gameOver;
     Sound trombone;
     State state = State.Running;
+    ConnectionHandler connectionHandler;
     World world;
     WorldRenderer renderer;
 
-    public GameScreen(Game game, boolean useAccelerometer, Socket socket)
+    public GameScreen(Game game, boolean useAccelerometer, ConnectionHandler connectionHandler)
     {
         super(game);
+        this.connectionHandler = connectionHandler;
         this.accelerometer = useAccelerometer;
-
-
 
         font = game.loadFont("Qarmic_sans_Abridged.ttf");
         background = game.loadBitmap("background.png");
@@ -44,7 +44,7 @@ public class GameScreen extends Screen
         gameOver = game.loadBitmap("gameover.png");
         trombone = game.loadSound("Sad_Trombone.mp3");
 
-        world = new World(game, socket);
+        world = new World(connectionHandler);
         renderer = new WorldRenderer(game, world);
 
         resume();
@@ -60,12 +60,12 @@ public class GameScreen extends Screen
         if (state == State.gameOver && game.isTouchDown(0))
         {
             dispose();
-            game.setScreen(new StartScreen(game));
+            game.setScreen(new StartScreen(game, connectionHandler));
             return;
         }
+        float input = 0;
         if (state == State.Running)
         {
-            float input = 0;
             if (accelerometer)
             {
                 input = -game.getAccelerometer()[0] / 10;
@@ -80,9 +80,8 @@ public class GameScreen extends Screen
                     else if (touchX > 270) input = 1;
                 }
             }
-            world.update(deltaTime, input);
         }
-
+        world.update(deltaTime, input);
         renderer.render();
 
         if (state == State.Running)
@@ -113,6 +112,7 @@ public class GameScreen extends Screen
 
         }
         game.music.pause();
+//        connectionHandler.terminateConnection();
     }
 
     @Override
@@ -125,5 +125,6 @@ public class GameScreen extends Screen
     public void dispose()
     {
         game.music.pause();
+//        connectionHandler.terminateConnection();
     }
 }
