@@ -108,6 +108,7 @@ public class World
         {
             if (id == s.id)
             {
+                Log.d("enemy found", "" + id);
                 s.angle = angle;
                 s.x = x;
                 s.y = y;
@@ -124,6 +125,7 @@ public class World
             {
                 for (SnakeBody b : s.bodySegments)
                 {
+                    Log.d("enemy found " + snakeID, "body " + bodyID);
                     if (bodyID == b.id)
                     {
                         b.x = x;

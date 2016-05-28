@@ -124,6 +124,7 @@ public class GameScreen extends Screen
     @Override
     public void dispose()
     {
+        connectionHandler.send("CLOSE" + connectionHandler.split + connectionHandler.getConnectionId());
         game.music.pause();
 //        connectionHandler.terminateConnection();
     }
