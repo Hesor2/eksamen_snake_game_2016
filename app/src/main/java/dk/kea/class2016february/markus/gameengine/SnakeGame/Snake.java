@@ -28,7 +28,7 @@ public class Snake
     private static float TIMERLIMIT = 0.13f;
 
 //    private int bodyCount;
-    List<SnakeBody> bodySegments;
+    List<SnakeBody> bodySegments = new ArrayList<>();;
 
     private int lastBodySegment;
     private boolean newBodySegment;
@@ -51,7 +51,6 @@ public class Snake
         newBodySegment = false;
         newSegmentCount = 0;
 
-        bodySegments = new ArrayList<>();
         bodySegments.add(new SnakeBody(bodySegments.size(), x, y));
 
         if (world.online)

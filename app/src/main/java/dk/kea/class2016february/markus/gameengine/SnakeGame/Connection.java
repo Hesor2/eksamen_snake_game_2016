@@ -8,15 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import dk.kea.class2016february.markus.gameengine.Game;
 
-/**
- * Created by Shonix on 5/23/2016.
- */
 public class Connection extends Thread
 {
     ConnectionHandler handler;
-    String ipAdress = "10.111.180.94";
+    String ipAdress = "5.103.158.81";
     int port = 7777;
     Socket socket;
     BufferedReader inFromServer;
