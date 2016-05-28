@@ -52,7 +52,6 @@ public class InstructionDecoder
                                 world.addEnemyBody(snakeID, bodyID, bodyX, bodyY);
                                 break;
                             case "FOOD":
-                                Log.d("add", "food");
                                 int foodID = Integer.parseInt(params[2]);
                                 float foodX = Float.parseFloat(params[3]);
                                 float foodY = Float.parseFloat(params[4]);
@@ -85,6 +84,11 @@ public class InstructionDecoder
                             case "SNAKE":
                                 int id = Integer.parseInt(params[2]);
                                 world.deleteEnemy(id);
+                                break;
+                            case "BODY":
+                                int snakeID = Integer.parseInt(params[2]);
+                                int bodyID = Integer.parseInt(params[3]);
+                                world.deleteEnemyBody(snakeID, bodyID);
                                 break;
                             case "FOOD":
                                 int foodID = Integer.parseInt(params[2]);
@@ -119,6 +123,11 @@ public class InstructionDecoder
     public void sendDelSnake(int id)
     {
         connectionHandler.send("DEL" + connectionHandler.split + "SNAKE" + connectionHandler.split + id + '\n');
+    }
+
+    public void sendDelBody(int snakeID, int bodyID)
+    {
+        connectionHandler.send("DEL" + connectionHandler.split + "BODY" + connectionHandler.split + snakeID + connectionHandler.split + bodyID + '\n');
     }
 
     public void sendDelFood(int id)

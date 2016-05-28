@@ -55,26 +55,26 @@ public class World
             decoder.executeInstructions();
         }
 
-
-        foodTimer += 1*deltaTime;
-        if (foodTimer>=World.timerLimit)
-        {
-            float x = rand.nextInt((int) maxX);
-            float y = minY + rand.nextInt((int) (maxY - minY));
-            if (online)
-            {
-//                Log.d("World spawn food", "" + x + " " + y);
-                decoder.sendSpawnFood(x,y);
-            }
-            else
-            {
-                food.add(new Food(0, x, y));
-            }
-            foodTimer = 0;
-        }
-
         if (!gameOver)
         {
+            foodTimer += 1*deltaTime;
+            if (foodTimer>=World.timerLimit)
+            {
+                float x = rand.nextInt((int) maxX);
+                float y = minY + rand.nextInt((int) (maxY - minY));
+
+                if (online)
+                {
+//                Log.d("World spawn food", "" + x + " " + y);
+                    decoder.sendSpawnFood(x,y);
+                }
+                else
+                {
+                    food.add(new Food(0, x, y));
+                }
+                foodTimer = 0;
+            }
+
             snake.update(deltaTime, input);
             camera.update();
         }
@@ -149,6 +149,24 @@ public class World
         }
     }
 
+    public void deleteEnemyBody(int snakeID, int bodyID)
+    {
+        for (Snake s : enemies)
+        {
+            if (snakeID == s.id)
+            {
+                for (SnakeBody b : s.bodySegments)
+                {
+                    if (b.id == bodyID)
+                    {
+                        s.bodySegments.remove(b);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     public void deleteFood(int id)
     {
         for (Food f : food)
@@ -160,6 +178,7 @@ public class World
             }
         }
     }
+
 
 
 }
