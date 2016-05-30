@@ -42,7 +42,17 @@ public class World
         {
             online = true;
         }
-        snake = new Snake(connectionHandler.getConnectionId(), 160, 320, 100, this);
+
+        int spawnBuffer = 40;
+
+        int range = (int)(maxX  - Snake.WIDTH - spawnBuffer - minX + spawnBuffer) + 1;
+        float x =  rand.nextInt(range) + minX + spawnBuffer;
+
+        range = (int)(maxY  - Snake.HEIGHT - spawnBuffer - minY + spawnBuffer) + 1;
+        float y =  rand.nextInt(range) + minY + spawnBuffer;
+
+        snake = new Snake(connectionHandler.getConnectionId(), x, y, 100, this);
+
         camera  = new Camera(snake, this);
     }
 
@@ -59,8 +69,8 @@ public class World
             foodTimer += 1*deltaTime;
             if (foodTimer>=World.timerLimit)
             {
-                float x = rand.nextInt((int) maxX);
-                float y = minY + rand.nextInt((int) (maxY - minY));
+                float x = rand.nextInt((int) (maxX - Food.WIDTH - minY));
+                float y = minY + rand.nextInt((int) (maxY - Food.HEIGHT - minY));
 
                 if (online)
                 {

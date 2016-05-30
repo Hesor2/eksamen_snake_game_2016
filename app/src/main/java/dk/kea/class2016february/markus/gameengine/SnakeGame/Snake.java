@@ -211,7 +211,6 @@ public class Snake
                 world.food.add(new Food(0, segment.x, segment.y));
                 bodySegments.remove(i);
             }
-
         }
 
         if (world.online)
