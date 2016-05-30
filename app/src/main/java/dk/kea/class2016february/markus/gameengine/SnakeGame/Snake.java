@@ -6,7 +6,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.kea.class2016february.markus.gameengine.BreakoutGame.Ball;
 
 
 public class Snake
@@ -72,7 +71,6 @@ public class Snake
     {
         collideFood();
         segmentTimer += 1*deltaTime;
-//        Log.d("SegmenTimer", "" + segmentTimer);
         if (segmentTimer>=Snake.TIMERLIMIT)
         {
             int size = bodySegments.size();

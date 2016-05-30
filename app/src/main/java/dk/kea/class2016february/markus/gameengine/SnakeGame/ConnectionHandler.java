@@ -41,6 +41,16 @@ public class ConnectionHandler
         }
     }
 
+    public void resetConnection()
+    {
+        if (isConnected())
+        {
+            terminateConnection();
+        }
+        connection = new Connection(this);
+        connection.start();
+    }
+
     public int getConnectionId()
     {
         return connection.id;

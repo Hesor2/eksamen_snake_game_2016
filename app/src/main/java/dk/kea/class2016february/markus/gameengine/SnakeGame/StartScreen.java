@@ -50,10 +50,7 @@ public class StartScreen extends Screen
                     //connect ting
                     try
                     {
-                        if (connectionHandler.isConnected()) connectionHandler.terminateConnection();
-                        Connection C = new Connection(connectionHandler);
-                        C.start();
-                        Log.d("SnakeGame", "CC Created");
+                        connectionHandler.resetConnection();
                     } catch (Exception e)
                     {
                         e.printStackTrace();
