@@ -14,14 +14,13 @@ public class World
 {
     public float minX = 0;
     //319
-    public float maxX = 3977;
+    public float maxX = 1999;
     public float minY = 0;
     //479
-    public float maxY = 1656;
+    public float maxY = 1999;
     public float foodTimer = 0;
     public static final float timerLimit = 2;
 
-//    public SnakeGame game;
     ConnectionHandler connectionHandler;
     InstructionDecoder decoder;
     boolean online = false;

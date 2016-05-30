@@ -12,7 +12,7 @@ import java.net.Socket;
 public class Connection extends Thread
 {
     ConnectionHandler handler;
-    String ipAdress = "5.103.158.81";
+    String ipAdress = "10.111.180.89";
     int port = 7777;
     Socket socket;
     BufferedReader inFromServer;
@@ -58,7 +58,8 @@ public class Connection extends Thread
                         {
                             id = Integer.parseInt(params[1]);
                             handler.setConnection(this);
-                            Log.d("id", message);
+//                            send("hello, my id is: " + id);
+//                            Log.d("id", message);
                         }
                         else
                         {

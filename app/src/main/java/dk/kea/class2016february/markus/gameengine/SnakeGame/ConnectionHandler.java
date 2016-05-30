@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ConnectionHandler
 {
-    char split = '|';
+    char split = (char)007;
 
     private Connection connection;
 

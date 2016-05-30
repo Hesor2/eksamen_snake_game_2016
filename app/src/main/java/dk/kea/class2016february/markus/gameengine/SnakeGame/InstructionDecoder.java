@@ -32,70 +32,78 @@ public class InstructionDecoder
             for (String s : currentInstructions)
             {
                 String[] params = s.split(String.valueOf(connectionHandler.split));
-                switch (params[0])
+                try
                 {
-                    case "NEW":
-                        switch (params[1])
-                        {
-                            case "SNAKE":
-                                int id = Integer.parseInt(params[2]);
-                                float angle = Float.parseFloat(params[3]);
-                                float x = Float.parseFloat(params[4]);
-                                float y = Float.parseFloat(params[5]);
-                                world.addEnemy(id, angle, x, y);
-                                break;
-                            case "BODY":
-                                int snakeID = Integer.parseInt(params[2]);
-                                int bodyID = Integer.parseInt(params[3]);
-                                float bodyX = Float.parseFloat(params[4]);
-                                float bodyY = Float.parseFloat(params[5]);
-                                world.addEnemyBody(snakeID, bodyID, bodyX, bodyY);
-                                break;
-                            case "FOOD":
-                                int foodID = Integer.parseInt(params[2]);
-                                float foodX = Float.parseFloat(params[3]);
-                                float foodY = Float.parseFloat(params[4]);
-                                world.addFood(foodID, foodX, foodY);
-                                break;
-                        }
-                        break;
-                    case "SET":
-                        switch (params[1])
-                        {
-                            case "SNAKE":
-                                int id = Integer.parseInt(params[2]);
-                                float angle = Float.parseFloat(params[3]);
-                                float x = Float.parseFloat(params[4]);
-                                float y = Float.parseFloat(params[5]);
-                                world.setEnemy(id, angle, x, y);
-                                break;
-                            case "BODY":
-                                int snakeID = Integer.parseInt(params[2]);
-                                int bodyID = Integer.parseInt(params[3]);
-                                float bodyX = Float.parseFloat(params[4]);
-                                float bodyY = Float.parseFloat(params[5]);
-                                world.setEnemyBody(snakeID, bodyID, bodyX, bodyY);
-                                break;
-                        }
-                        break;
-                    case "DEL":
-                        switch (params[1])
-                        {
-                            case "SNAKE":
-                                int id = Integer.parseInt(params[2]);
-                                world.deleteEnemy(id);
-                                break;
-                            case "BODY":
-                                int snakeID = Integer.parseInt(params[2]);
-                                int bodyID = Integer.parseInt(params[3]);
-                                world.deleteEnemyBody(snakeID, bodyID);
-                                break;
-                            case "FOOD":
-                                int foodID = Integer.parseInt(params[2]);
-                                world.deleteFood(foodID);
-                                break;
-                        }
-                        break;
+                    switch (params[0])
+                    {
+                        case "NEW":
+                            switch (params[1])
+                            {
+                                case "SNAKE":
+                                    int id = Integer.parseInt(params[2]);
+                                    float angle = Float.parseFloat(params[3]);
+                                    float x = Float.parseFloat(params[4]);
+                                    float y = Float.parseFloat(params[5]);
+                                    world.addEnemy(id, angle, x, y);
+                                    break;
+                                case "BODY":
+                                    int snakeID = Integer.parseInt(params[2]);
+                                    int bodyID = Integer.parseInt(params[3]);
+                                    float bodyX = Float.parseFloat(params[4]);
+                                    float bodyY = Float.parseFloat(params[5]);
+                                    world.addEnemyBody(snakeID, bodyID, bodyX, bodyY);
+                                    break;
+                                case "FOOD":
+                                    int foodID = Integer.parseInt(params[2]);
+                                    float foodX = Float.parseFloat(params[3]);
+                                    float foodY = Float.parseFloat(params[4]);
+                                    world.addFood(foodID, foodX, foodY);
+                                    break;
+                            }
+                            break;
+                        case "SET":
+                            switch (params[1])
+                            {
+                                case "SNAKE":
+                                    int id = Integer.parseInt(params[2]);
+                                    float angle = Float.parseFloat(params[3]);
+                                    float x = Float.parseFloat(params[4]);
+                                    float y = Float.parseFloat(params[5]);
+                                    world.setEnemy(id, angle, x, y);
+                                    break;
+                                case "BODY":
+                                    int snakeID = Integer.parseInt(params[2]);
+                                    int bodyID = Integer.parseInt(params[3]);
+                                    float bodyX = Float.parseFloat(params[4]);
+                                    float bodyY = Float.parseFloat(params[5]);
+                                    world.setEnemyBody(snakeID, bodyID, bodyX, bodyY);
+                                    break;
+                            }
+                            break;
+                        case "DEL":
+                            int snakeID;
+                            switch (params[1])
+                            {
+                                case "SNAKE":
+                                    snakeID = Integer.parseInt(params[2]);
+                                    world.deleteEnemy(snakeID);
+                                    break;
+                                case "BODY":
+                                    snakeID = Integer.parseInt(params[2]);
+                                    int bodyID = Integer.parseInt(params[3]);
+                                    world.deleteEnemyBody(snakeID, bodyID);
+                                    break;
+                                case "FOOD":
+                                    int foodID = Integer.parseInt(params[2]);
+                                    world.deleteFood(foodID);
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                catch (NumberFormatException e)
+                {
+                    e.printStackTrace();
                 }
             }
     }
@@ -130,9 +138,9 @@ public class InstructionDecoder
         connectionHandler.send("DEL" + connectionHandler.split + "BODY" + connectionHandler.split + snakeID + connectionHandler.split + bodyID + '\n');
     }
 
-    public void sendDelFood(int id)
+    public void sendDelFood(int snakeID, int foodID)
     {
-        connectionHandler.send("DEL" + connectionHandler.split + "FOOD" + connectionHandler.split + id + '\n');
+        connectionHandler.send("DEL" + connectionHandler.split + "FOOD" + connectionHandler.split + snakeID + connectionHandler.split + foodID + '\n');
     }
 
     public void sendSpawnFood(float x, float y)

@@ -51,12 +51,12 @@ public class Snake
         newBodySegment = false;
         newSegmentCount = 0;
 
-        bodySegments.add(new SnakeBody(bodySegments.size(), x, y));
+        bodySegments.add(new SnakeBody(0, x, y));
 
         if (world.online)
         {
             world.decoder.sendNewSnake(id,angle,x,y);
-            world.decoder.sendNewBody(id, bodySegments.size(), x, y);
+            world.decoder.sendNewBody(id, 0, x, y);
         }
     }
 
@@ -82,7 +82,7 @@ public class Snake
                 bodySegments.add(new SnakeBody(size, x, y));
                 if (world.online)
                 {
-                    world.decoder.sendNewBody(id, bodySegments.size(), x, y);
+                    world.decoder.sendNewBody(id, size, x, y);
                 }
                 newSegmentCount--;
                 if (newSegmentCount == 0) newBodySegment = false;
@@ -139,7 +139,7 @@ public class Snake
 
                         if (world.online)
                         {
-                            world.decoder.sendDelFood(food.id);
+                            world.decoder.sendDelFood(id, food.id);
                         }
                         world.food.remove(i);
 

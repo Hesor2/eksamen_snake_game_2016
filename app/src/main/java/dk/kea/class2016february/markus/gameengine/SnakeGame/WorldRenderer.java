@@ -31,12 +31,12 @@ public class WorldRenderer
 
         this.snaketestImage = game.loadBitmap("Snake_Test.png");
 
-        this.backgroundImage = game.loadBitmap("plane.jpg");
-        this.snakeheadImage = game.loadBitmap("Snake_Green_Head.png");
-        this.snakebodyImage = game.loadBitmap("Snake_Green_Body.png");
-        this.enemyheadImage = game.loadBitmap("Snake_Red_Head.png");
-        this.enemybodyImage = game.loadBitmap("Snake_Red_Body.png");
-        this.foodImage = game.loadBitmap("ball.png");
+        this.backgroundImage = game.loadBitmap("bck.png");
+        this.snakeheadImage = game.loadBitmap("snakeface.png");
+        this.snakebodyImage = game.loadBitmap("snakebody.png");
+        this.enemyheadImage = game.loadBitmap("snakeface red.png");
+        this.enemybodyImage = game.loadBitmap("snakebody red.png");
+        this.foodImage = game.loadBitmap("food.png");
     }
 
     public void render()
