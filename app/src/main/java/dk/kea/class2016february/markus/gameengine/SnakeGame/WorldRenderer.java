@@ -44,17 +44,19 @@ public class WorldRenderer
         Bitmap rotatedBitmap;
         cameraBoundary = world.camera.getBoundary();
 
-//        drawBitmap(Bitmap bitmap, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight)
+        //Baggrund tegnes ud fra kameraets information med følgende metode fra GameEngine
+        //drawBitmap(Bitmap bitmap, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight)
         game.drawBitmap(backgroundImage, 0, 0, (int)cameraBoundary.left, (int)cameraBoundary.top, (int)Camera.WIDTH, (int)Camera.HEIGHT);
-
+        //Spillets objekter tegnes ud fra World-objektets information
         for (Food food : world.food)
         {
             float foodRight = food.x + Food.WIDTH;
             float foodBottom = food.y + Food.HEIGHT;
+            //objekterne tjekkes for, hvor vidt de er inde for kameraets rækkevidde
             if (food.x <= cameraBoundary.right && foodRight >= cameraBoundary.left && food.y <= cameraBoundary.bottom && foodBottom >= cameraBoundary.top)
             {
+                //objekterne tegnes på canvas relativt til kameraets position
                 game.drawBitmap(foodImage, (int) food.x - cameraBoundary.left, (int) food.y - cameraBoundary.top);
-
             }
         }
 

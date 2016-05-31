@@ -98,13 +98,15 @@ public class Snake
                 if (size < lastBodySegment + 1) lastBodySegment -= size;
             }
         }
-        angle += turnSpeed * input * deltaTime;
 
+        //angle ændres i forhold til brugerinput
+        //da input kan være både positivt, 0 eller negativt, benyttes et enkelt regnestykke
+        angle += turnSpeed * input * deltaTime;
+        //angle holdes konstant mellem 0 og 360
         if (angle < 0) angle += 360;
         else if(angle > 360) angle -=360;
 
-        velocityX = totalVelocity * (float) Math.cos(Math.toRadians(angle));
-        velocityY = totalVelocity * (float)Math.sin(Math.toRadians(angle));
+
 
         move(deltaTime);
 
@@ -183,7 +185,14 @@ public class Snake
 
     private void move(float deltaTime)
     {
-//        Log.d("Velocity", "" + (xSpeed+ySpeed));
+        //angle er grader vinkel, hvor vinlen 0 peger mod højre på skærmen
+        //angle benyttes til at danne en retning til vector ved omdannelse til radianer
+        //derefter bruges bruges sinus eller cosinus til udregning af ændringen i enten x eller y akserne
+        //disse ganges med totalVelocity, der fungerer som vektorens længde
+        //dette giver relative koordinater til en vector med udgangspunkt fra koordinaterne 0,0
+        velocityX = (float) Math.cos(Math.toRadians(angle)) * totalVelocity;
+        velocityY = (float)Math.sin(Math.toRadians(angle)) * totalVelocity;
+        //relative koordinater ganges med deltatid og lægges oveni nuværende koordinater
         x += velocityX * deltaTime;
         y += velocityY * deltaTime;
 
@@ -199,19 +208,19 @@ public class Snake
         world.gameOver = true;
 
         int size = bodySegments.size();
-        for (int i = size - 1; i >= 0; i--)
-        {
-            SnakeBody segment = bodySegments.get(i);
-            if (world.online)
-            {
-                world.decoder.sendSpawnFood(segment.x, segment.y);
-            }
-            else
-            {
-                world.food.add(new Food(0, segment.x, segment.y));
-                bodySegments.remove(i);
-            }
-        }
+//        for (int i = size - 1; i >= 0; i--)
+//        {
+//            SnakeBody segment = bodySegments.get(i);
+//            if (world.online)
+//            {
+//                world.decoder.sendSpawnFood(segment.x, segment.y);
+//            }
+//            else
+//            {
+//                world.food.add(new Food(0, segment.x, segment.y));
+//                bodySegments.remove(i);
+//            }
+//        }
 
         if (world.online)
         {

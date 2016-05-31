@@ -21,6 +21,7 @@ public class GameScreen extends Screen
     }
 
     boolean accelerometer;
+    private boolean pointerReleased;
 
     Typeface font;
     Bitmap background;
@@ -57,24 +58,29 @@ public class GameScreen extends Screen
         {
             state = State.gameOver;
         }
-        if (state == State.gameOver && game.isTouchDown(0))
+        if (state == State.gameOver && game.isTouchDown(0) && pointerReleased)
         {
             dispose();
             game.setScreen(new StartScreen(game, connectionHandler));
             return;
         }
+
+        //GameScreen klargører brugerinputs til world
         float input = 0;
         if (state == State.Running)
         {
+            //der benyttes enten accelerometer eller touch-funktionalitet
             if (accelerometer)
             {
+                //accelerometer giver mellem 10 eller -10 naturligt
+                //divideres med 10 for at have en fælles standard
                 input = -game.getAccelerometer()[0] / 10;
-//                Log.d("accel", "" + input);
             }
             else
             {
                 if (game.isTouchDown(0))
                 {
+                    //som touch gives enten 1, 0 eller -1
                     int touchX = game.getTouchX(0);
                     if (touchX < 49) input = -1;
                     else if (touchX > 270) input = 1;
@@ -100,6 +106,9 @@ public class GameScreen extends Screen
             game.drawText(font, "Your Score:", 100, 240, Color.GREEN, 20);
             game.drawText(font, "" + world.score, 140, 260, Color.YELLOW, 30);
         }
+
+        pointerReleased = !game.isTouchDown(0);
+        Log.d("pointerReleased", "" + pointerReleased);
     }
 
     @Override

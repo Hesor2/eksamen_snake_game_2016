@@ -247,8 +247,11 @@ public abstract class Game extends Activity implements Runnable, View.OnKeyListe
 
     public static Bitmap rotateBitmap(Bitmap source, float angle)
     {
+        //matrix-object laves
         Matrix matrix = new Matrix();
+        //matrix får tilføjet instruktionen, at det skal roteres med given vinkel
         matrix.postRotate(angle);
+        //nyt bitmap returneres ud fra det konstruerede matrix
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
